@@ -3,7 +3,7 @@ __pycache__/
 *.pyc
 *.pyo
 
-*/migrations/
+*migrations/
 
 # Ignore environment files
 .env

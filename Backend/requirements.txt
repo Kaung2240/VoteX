@@ -1,0 +1,10 @@
+django
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+django-filter
+pytest-django
+django-rest-passwordreset
+django-allauth
+pytz
+Pillow

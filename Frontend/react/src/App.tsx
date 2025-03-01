@@ -9,7 +9,9 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import UserProfile from "./components/UserProfile";
 import EventDetail from "./components/EventDetail";
-import React from "react";
+import axios from 'axios';
+import { refreshAccessToken } from "./utils/auth";
+import {jwtDecode as jwt_decode} from 'jwt-decode';
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -21,6 +23,20 @@ const App = () => {
     setSelectedEventId(eventId);
     setCurrentPage("event-detail");
   };
+
+  // Add to your main App component or separate config
+  axios.interceptors.request.use(async (config) => {
+    let token = localStorage.getItem('access_token');
+  
+    if (token) {
+      const decoded = jwt_decode(token) as { exp: number };
+      if (decoded.exp < Date.now() / 1000) {
+        token = await refreshAccessToken();
+      }
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
   
   // Determine whether to show the navbar based on the current page
   const showNavbar = !["login", "register"].includes(currentPage);

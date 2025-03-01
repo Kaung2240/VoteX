@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle, FaGithub, FaArrowRight } from "react-icons/fa";
+import {jwtDecode as jwt_decode} from 'jwt-decode';
 
 interface LoginProps {
   darkMode: boolean;
@@ -17,24 +18,55 @@ const Login: React.FC<LoginProps> = ({ darkMode, setCurrentPage }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form
     if (!email || !password) {
       setFormError("Please fill in all fields");
       return;
     }
-    
-    // Reset error state
+  
     setFormError("");
-    
-    // Show loading state
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // Navigate to events page after successful login
+  
+    try {
+      // Login API call
+      const response = await fetch('http://127.0.0.1:8000/api/token/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: email, // Assuming email is used as username
+          password: password
+        }),
+      });
+  
+      const data = await response.json();
+      
+      if (!response.ok) {
+        setFormError(data.detail || "Login failed");
+        return;
+      }
+  
+      // Store tokens and set expiration check
+      localStorage.setItem('access_token', data.access);
+      localStorage.setItem('refresh_token', data.refresh);
+      
+      // Set automatic logout
+      interface JwtPayload {
+        exp: number;
+      }
+      const decoded = jwt_decode<JwtPayload>(data.access);
+      const expiresIn = decoded.exp * 1000 - Date.now();
+
+      setTimeout(() => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        setCurrentPage("login");
+      }, expiresIn);
+  
       setCurrentPage("events");
-    }, 1500);
+    } catch (error) {
+      setFormError("Network error. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Animation variants

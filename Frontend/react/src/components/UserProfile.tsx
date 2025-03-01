@@ -1,5 +1,5 @@
 // components/UserProfile.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
   FaUser, 
@@ -11,7 +11,6 @@ import {
   FaKey, 
   FaHistory,
   FaSave,
-  FaBell,
   FaVoteYea,
   FaCheckCircle,
   FaClock
@@ -24,6 +23,17 @@ interface UserProfileProps {
 export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
+  const [isComponentMounted, setIsComponentMounted] = useState(false);
+  
+  // Ensure component is fully mounted before animations
+  useEffect(() => {
+    setIsComponentMounted(true);
+    
+    // Clean up function
+    return () => {
+      setIsComponentMounted(false);
+    };
+  }, []);
   
   // Mock user data
   const [userData, setUserData] = useState({
@@ -54,6 +64,18 @@ export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
     e.preventDefault();
     setIsEditing(false);
     // Here you would implement actual profile update logic
+  };
+
+  // Define animation variants
+  const contentVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        duration: 0.5,
+        when: "beforeChildren"
+      }
+    }
   };
 
   return (
@@ -191,13 +213,9 @@ export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
           
           {/* Right Column - Tabs & Content */}
           <div className="col-span-1 lg:col-span-2">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className={`rounded-xl shadow-lg overflow-hidden ${darkMode ? "bg-gray-700" : "bg-white"}`}
-            >
+            <div className={`rounded-xl shadow-lg overflow-hidden ${darkMode ? "bg-gray-700" : "bg-white"} z-10 relative`}>
               {/* Tabs */}
-              <div className="flex border-b ${darkMode ? 'border-gray-600' : 'border-gray-200'}">
+              <div className={`flex border-b ${darkMode ? "border-gray-600" : "border-gray-200"} w-full`}>
                 <button 
                   onClick={() => setActiveTab("profile")}
                   className={`px-6 py-4 text-center flex-1 font-medium ${
@@ -490,9 +508,8 @@ export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
                     </h3>
                     <div className="space-y-4">
                       {upcomingEvents.map((event) => (
-                        <motion.div 
+                        <div 
                           key={event.id}
-                          whileHover={{ scale: 1.01 }}
                           className={`p-4 rounded-lg shadow ${darkMode ? "bg-gray-600" : "bg-gray-50"} flex justify-between items-center`}
                         >
                           <div className="flex-1">
@@ -522,15 +539,15 @@ export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
                               Vote Now
                             </button>
                           </div>
-                        </motion.div>
+                        </div>
                       ))}
+                      
+                      {upcomingEvents.length === 0 && (
+                        <div className={`p-6 text-center rounded-lg ${darkMode ? "bg-gray-600" : "bg-gray-50"}`}>
+                          <p>No upcoming votes at this time.</p>
+                        </div>
+                      )}
                     </div>
-                    
-                    {upcomingEvents.length === 0 && (
-                      <div className={`p-6 text-center rounded-lg ${darkMode ? "bg-gray-600" : "bg-gray-50"}`}>
-                        <p>No upcoming votes at this time.</p>
-                      </div>
-                    )}
                   </div>
                 )}
                 
@@ -653,7 +670,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
                   </div>
                 )}
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>

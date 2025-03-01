@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
 
 export interface Event {
   id: number;
@@ -31,10 +32,10 @@ export interface Event {
 
 interface EventComponentProps {
   darkMode: boolean;
-  navigateToEventDetail: (eventId: number) => void;
 }
 
-export const EventComponent = ({ darkMode, navigateToEventDetail }: EventComponentProps) => {
+export const EventComponent = ({ darkMode }: EventComponentProps) => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("latest");
@@ -117,7 +118,7 @@ export const EventComponent = ({ darkMode, navigateToEventDetail }: EventCompone
 
   const handleViewDetails = (eventId: number, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the card click event from firing
-    navigateToEventDetail(eventId);
+    navigate(`/event/${eventId}`);
   };
 
   return (
@@ -178,6 +179,7 @@ export const EventComponent = ({ darkMode, navigateToEventDetail }: EventCompone
             className={`px-4 py-2.5 rounded-lg flex items-center gap-2 shadow-md ${
               darkMode ? "bg-blue-600 hover:bg-blue-500" : "bg-blue-500 hover:bg-blue-600"
             } text-white transition-colors duration-200`}
+            onClick={() => navigate('/add-event')}
           >
             <FaCalendarPlus className="text-lg" />
             <span className="hidden md:block font-medium">New Event</span>
@@ -293,9 +295,12 @@ export const EventComponent = ({ darkMode, navigateToEventDetail }: EventCompone
           <p className={`text-gray-500 dark:text-gray-400 max-w-md mx-auto`}>
             We couldn't find any events matching your criteria. Try adjusting your filters or create a new event.
           </p>
-          <button className={`mt-6 px-6 py-3 rounded-lg ${
-            darkMode ? "bg-blue-600 hover:bg-blue-500" : "bg-blue-500 hover:bg-blue-600"
-          } text-white flex items-center gap-2 mx-auto`}>
+          <button 
+            className={`mt-6 px-6 py-3 rounded-lg ${
+              darkMode ? "bg-blue-600 hover:bg-blue-500" : "bg-blue-500 hover:bg-blue-600"
+            } text-white flex items-center gap-2 mx-auto`}
+            onClick={() => navigate('/add-event')}
+          >
             <FaCalendarPlus />
             <span>Create New Event</span>
           </button>
@@ -306,128 +311,132 @@ export const EventComponent = ({ darkMode, navigateToEventDetail }: EventCompone
             viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
           }`}>
             {paginatedEvents.map((event) => (
-              <motion.div
+              <Link 
                 key={event.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                whileHover={{
-                  scale: 1.02,
-                  boxShadow: darkMode 
-                    ? "0 10px 25px -5px rgba(0, 0, 0, 0.3)" 
-                    : "0 10px 25px -5px rgba(0, 0, 0, 0.1)"
-                }}
-                className={`rounded-xl overflow-hidden transition-all duration-300 ${
-                  darkMode ? "bg-gray-800 border border-gray-700" : "bg-white border border-gray-100"
-                } shadow-lg relative cursor-pointer`}
-                onClick={() => navigateToEventDetail(event.id)}
-                onMouseEnter={() => setHoveredCard(event.id)}
-                onMouseLeave={() => setHoveredCard(null)}
+                to={`/event/${event.id}`}
+                className="no-underline"
               >
-                {/* Status Ribbon - Enhanced with better styling */}
-                <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${
-                  event.status === "ongoing" ? "bg-green-500" :
-                  event.status === "upcoming" ? "bg-blue-500" : "bg-red-500"
-                } text-white shadow-sm z-10`}>
-                  {event.status}
-                </div>
-                {/* Card Header with Color Accent */}
-                <div className={`h-2 w-full ${
-                  event.category === "Technology" ? "bg-purple-500" :
-                  event.category === "Music" ? "bg-blue-500" :
-                  event.category === "Sports" ? "bg-green-500" : "bg-gray-500"
-                }`}></div>
-  
-                <div className={`p-5 mt-5 ${viewMode === "list" ? "flex flex-col md:flex-row md:items-center md:gap-6" : ""}`}>
-                  {/* Improved Progress Bar for ongoing events */}
-                  {event.status === "ongoing" && (
-                    <div className="mb-4 mt-1">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                          Event Progress
-                        </span>
-                        <span className="text-xs font-semibold text-blue-500">
-                          {Math.round(calculateProgress(event.start, event.end))}%
-                        </span>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  whileHover={{
+                    scale: 1.02,
+                    boxShadow: darkMode 
+                      ? "0 10px 25px -5px rgba(0, 0, 0, 0.3)" 
+                      : "0 10px 25px -5px rgba(0, 0, 0, 0.1)"
+                  }}
+                  className={`rounded-xl overflow-hidden transition-all duration-300 ${
+                    darkMode ? "bg-gray-800 border border-gray-700" : "bg-white border border-gray-100"
+                  } shadow-lg relative cursor-pointer`}
+                  onMouseEnter={() => setHoveredCard(event.id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                >
+                  {/* Status Ribbon - Enhanced with better styling */}
+                  <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${
+                    event.status === "ongoing" ? "bg-green-500" :
+                    event.status === "upcoming" ? "bg-blue-500" : "bg-red-500"
+                  } text-white shadow-sm z-10`}>
+                    {event.status}
+                  </div>
+                  {/* Card Header with Color Accent */}
+                  <div className={`h-2 w-full ${
+                    event.category === "Technology" ? "bg-purple-500" :
+                    event.category === "Music" ? "bg-blue-500" :
+                    event.category === "Sports" ? "bg-green-500" : "bg-gray-500"
+                  }`}></div>
+    
+                  <div className={`p-5 mt-5 ${viewMode === "list" ? "flex flex-col md:flex-row md:items-center md:gap-6" : ""}`}>
+                    {/* Improved Progress Bar for ongoing events */}
+                    {event.status === "ongoing" && (
+                      <div className="mb-4 mt-1">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                            Event Progress
+                          </span>
+                          <span className="text-xs font-semibold text-blue-500">
+                            {Math.round(calculateProgress(event.start, event.end))}%
+                          </span>
+                        </div>
+                        <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${calculateProgress(event.start, event.end)}%` }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            className="h-full bg-blue-500 rounded-full" 
+                          />
+                        </div>
                       </div>
-                      <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          animate={{ width: `${calculateProgress(event.start, event.end)}%` }}
-                          transition={{ duration: 1, ease: "easeOut" }}
-                          className="h-full bg-blue-500 rounded-full" 
-                        />
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Card Content with Improved Layout */}
-                  <div className={`flex flex-col gap-4 ${viewMode === "list" ? "md:flex-1" : ""}`}>
-                    <div className={`flex ${viewMode === "list" ? "gap-4 md:gap-6" : "flex-col gap-4"}`}>
-                      {/* Category Badge with Icon */}
-                      <div className={`flex items-center ${viewMode === "list" ? "" : ""}`}>
-                        <div className={`p-3 rounded-lg ${darkMode ? "bg-gray-700" : "bg-gray-100"} ${viewMode === "list" ? "hidden md:block" : ""}`}>
-                          {categoryIcons[event.category as keyof typeof categoryIcons]}
+                    )}
+                    
+                    {/* Card Content with Improved Layout */}
+                    <div className={`flex flex-col gap-4 ${viewMode === "list" ? "md:flex-1" : ""}`}>
+                      <div className={`flex ${viewMode === "list" ? "gap-4 md:gap-6" : "flex-col gap-4"}`}>
+                        {/* Category Badge with Icon */}
+                        <div className={`flex items-center ${viewMode === "list" ? "" : ""}`}>
+                          <div className={`p-3 rounded-lg ${darkMode ? "bg-gray-700" : "bg-gray-100"} ${viewMode === "list" ? "hidden md:block" : ""}`}>
+                            {categoryIcons[event.category as keyof typeof categoryIcons]}
+                          </div>
+                          
+                          <div className={`${viewMode === "list" ? "md:hidden" : "hidden"} mt-1 px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(event.category)}`}>
+                            {event.category}
+                          </div>
                         </div>
                         
-                        <div className={`${viewMode === "list" ? "md:hidden" : "hidden"} mt-1 px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(event.category)}`}>
-                          {event.category}
+                        <div className={`flex-1 ${viewMode === "list" ? "" : ""}`}>
+                          {/* Category Label for Grid View */}
+                          <div className={`${viewMode === "list" ? "hidden md:inline-block" : "block"} mb-2 px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(event.category)}`}>
+                            {event.category}
+                          </div>
+                          
+                          {/* Event Title - Enhanced with hover effect */}
+                          <h3 className={`text-lg font-semibold group relative ${darkMode ? "text-white" : "text-gray-900"}`}>
+                            {event.title}
+                            {hoveredCard === event.id && (
+                              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-0.5 bg-blue-500 transition-all duration-300"></span>
+                            )}
+                          </h3>
+        
+                          {/* Date & Time Information with better formatting */}
+                          <div className="space-y-3 mt-3">
+                            <div className="flex items-center gap-2.5">
+                              <FaCalendar className={`w-4 h-4 flex-shrink-0 ${darkMode ? "text-gray-400" : "text-gray-500"}`} />
+                              <div>
+                                <p className={`text-sm font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                                  {new Date(event.start).toLocaleDateString('en-US', {
+                                    month: 'short', day: 'numeric', year: 'numeric'
+                                  })}
+                                </p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                  {new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {' '}
+                                  {new Date(event.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </p>
+                              </div>
+                            </div>
+        
+                            {/* Creator and Participants Information */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2.5">
+                                <FaUser className={`w-4 h-4 flex-shrink-0 ${darkMode ? "text-gray-400" : "text-gray-500"}`} />
+                                <span className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                                  {event.creator}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <FaUsers className={`w-3.5 h-3.5 ${darkMode ? "text-gray-400" : "text-gray-500"}`} />
+                                <span className={`text-xs font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
+                                  {event.participants.toLocaleString()}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       
-                      <div className={`flex-1 ${viewMode === "list" ? "" : ""}`}>
-                        {/* Category Label for Grid View */}
-                        <div className={`${viewMode === "list" ? "hidden md:inline-block" : "block"} mb-2 px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(event.category)}`}>
-                          {event.category}
-                        </div>
-                        
-                        {/* Event Title - Enhanced with hover effect */}
-                        <h3 className={`text-lg font-semibold group relative ${darkMode ? "text-white" : "text-gray-900"}`}>
-                          {event.title}
-                          {hoveredCard === event.id && (
-                            <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-0.5 bg-blue-500 transition-all duration-300"></span>
-                          )}
-                        </h3>
-      
-                        {/* Date & Time Information with better formatting */}
-                        <div className="space-y-3 mt-3">
-                          <div className="flex items-center gap-2.5">
-                            <FaCalendar className={`w-4 h-4 flex-shrink-0 ${darkMode ? "text-gray-400" : "text-gray-500"}`} />
-                            <div>
-                              <p className={`text-sm font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                                {new Date(event.start).toLocaleDateString('en-US', {
-                                  month: 'short', day: 'numeric', year: 'numeric'
-                                })}
-                              </p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {' '}
-                                {new Date(event.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                              </p>
-                            </div>
-                          </div>
-      
-                          {/* Creator and Participants Information */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2.5">
-                              <FaUser className={`w-4 h-4 flex-shrink-0 ${darkMode ? "text-gray-400" : "text-gray-500"}`} />
-                              <span className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                                {event.creator}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <FaUsers className={`w-3.5 h-3.5 ${darkMode ? "text-gray-400" : "text-gray-500"}`} />
-                              <span className={`text-xs font-medium ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-                                {event.participants.toLocaleString()}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
                     </div>
-                    
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </Link>
             ))}
           </div>
   

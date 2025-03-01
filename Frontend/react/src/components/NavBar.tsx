@@ -29,6 +29,7 @@ const navigation = [
   { name: "Events", href: "#", icon: FaCalendarAlt, page: "events" },
   { name: "Vote Results", href: "#", icon: FaChartBar, page: "vote-results" },
   { name: "Add Event", href: "#", icon: FaCalendarPlus, page: "add-event" },
+  { name: "Login", href: '#', icon: FaSignInAlt, page: "login" }
 ];
 
 export const NavBar = ({ 

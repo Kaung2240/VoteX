@@ -80,12 +80,43 @@ const Register: React.FC<RegisterProps> = ({ darkMode, setCurrentPage }) => {
     // Show loading state
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // Navigate to events page after successful registration
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/auth/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: name,
+          email: email,
+          password: password,
+          password2: confirmPassword
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        // Handle backend validation errors
+        let errorMsg = '';
+        if (typeof data === 'object' && data !== null) {
+          for (const [key, value] of Object.entries(data)) {
+            errorMsg += `${key}: ${(value as string[]).join(' ')} `;
+          }
+        } else {
+          errorMsg = 'Registration failed. Please try again.';
+        }
+        setFormError(errorMsg.trim());
+        return;
+      }
+  
+      // Registration successful - navigate to events
       setCurrentPage("events");
-    }, 1500);
+    } catch (error) {
+      setFormError("Network error. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Animation variants

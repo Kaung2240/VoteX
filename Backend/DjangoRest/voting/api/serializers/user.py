@@ -10,10 +10,18 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password', 'password2', 'email')
+        extra_kwargs = {
+            'email': {'required': True}
+        }
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
+        email = attrs.get('email')
+        if not email:
+            raise serializers.ValidationError({"email": "Email is required."})
+        if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError({"email": "A user with this email already exists."})
         return attrs
 
     def create(self, validated_data):

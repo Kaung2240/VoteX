@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate, Link } from "react-router-dom";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle, FaGithub, FaArrowRight } from "react-icons/fa";
 
 interface LoginProps {
   darkMode: boolean;
-  setCurrentPage: (page: string) => void;
 }
 
-const Login: React.FC<LoginProps> = ({ darkMode, setCurrentPage }) => {
+const Login: React.FC<LoginProps> = ({ darkMode }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +34,7 @@ const Login: React.FC<LoginProps> = ({ darkMode, setCurrentPage }) => {
     setTimeout(() => {
       setIsLoading(false);
       // Navigate to events page after successful login
-      setCurrentPage("events");
+      navigate("/events");
     }, 1500);
   };
 
@@ -163,7 +164,6 @@ const Login: React.FC<LoginProps> = ({ darkMode, setCurrentPage }) => {
                 Remember me
               </label>
             </div>
-
             <div className="text-sm">
               <a href="#" className="font-medium text-blue-500 hover:text-blue-400">
                 Forgot your password?
@@ -239,13 +239,13 @@ const Login: React.FC<LoginProps> = ({ darkMode, setCurrentPage }) => {
         <motion.div variants={itemVariants} className="flex justify-center mt-6">
           <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
             Don't have an account?{' '}
-            <button 
-              onClick={() => setCurrentPage("register")}
+            <Link 
+              to="/register"
               className="font-medium text-blue-500 hover:text-blue-400 inline-flex items-center"
             >
               Register now 
               <FaArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
-            </button>
+            </Link>
           </p>
         </motion.div>
       </motion.div>

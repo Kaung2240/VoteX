@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   FaChevronLeft,
   FaHeart,
@@ -24,11 +25,11 @@ interface Candidate {
 
 interface EventDetailProps {
   darkMode: boolean;
-  eventId: number;
-  setCurrentPage: (page: string) => void;
 }
 
-export const EventDetail = ({ darkMode, eventId, setCurrentPage }: EventDetailProps) => {
+export const EventDetail = ({ darkMode }: EventDetailProps) => {
+  const { eventId } = useParams();
+  const navigate = useNavigate();
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [selectedCandidate, setSelectedCandidate] = useState<number | null>(null);
@@ -44,7 +45,7 @@ export const EventDetail = ({ darkMode, eventId, setCurrentPage }: EventDetailPr
     // Simulate API call delay
     setTimeout(() => {
       const mockEvent = {
-        id: eventId,
+        id: parseInt(eventId || "1"),
         title: "Tech Conference 2024",
         description: "Join us for the biggest tech conference of 2024. Featuring keynotes from industry leaders, workshops, and networking opportunities.",
         category: "Technology",
@@ -166,7 +167,7 @@ export const EventDetail = ({ darkMode, eventId, setCurrentPage }: EventDetailPr
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => setCurrentPage("events")}
+        onClick={() => navigate("/events")}
         className={`mb-6 flex items-center gap-2 px-4 py-2 rounded-lg ${
           darkMode ? "bg-gray-800 hover:bg-gray-700" : "bg-white hover:bg-gray-100"
         } shadow-sm transition-all duration-200`}

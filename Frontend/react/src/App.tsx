@@ -1,5 +1,6 @@
 // App.tsx
 import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { NavBar } from "./components/NavBar";
 import { EventComponent } from "./components/Event";
 import { HomeComponent } from "./components/Home";
@@ -15,7 +16,6 @@ import {jwtDecode as jwt_decode} from 'jwt-decode';
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
-  const [currentPage, setCurrentPage] = useState("dashboard");
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
   
   // Function to navigate to event detail
@@ -42,42 +42,36 @@ const App = () => {
   const showNavbar = !["login", "register"].includes(currentPage);
   
   return (
-    <div className="min-h-screen">
-      {showNavbar && (
-        <NavBar 
-          darkMode={darkMode} 
-          setDarkMode={setDarkMode}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
-      )}
-      <div className={showNavbar ? "pl-16" : ""}> {/* Match navbar width when applicable */}
-        {currentPage === "dashboard" ? (
-          <HomeComponent darkMode={darkMode} />
-        ) : currentPage === "add-event" ? (
-          <CreateEvent darkMode={darkMode} />
-        ) : currentPage === "vote-results" ? (
-          <VoteResultComponent darkMode={darkMode} />
-        ) : currentPage === "login" ? (
-          <Login darkMode={darkMode} setCurrentPage={setCurrentPage} />
-        ) : currentPage === "register" ? (
-          <Register darkMode={darkMode} setCurrentPage={setCurrentPage} />
-        ) : currentPage === "profile" ? (
-          <UserProfile darkMode={darkMode} />
-        ) : currentPage === "event-detail" && selectedEventId !== null ? (
-          <EventDetail 
-            darkMode={darkMode} 
-            eventId={selectedEventId} 
-            setCurrentPage={setCurrentPage}
+    <Router>
+      <div className="min-h-screen">
+        <Routes>
+          {/* Auth routes (no navbar) */}
+          <Route path="/login" element={<Login darkMode={darkMode} />} />
+          <Route path="/register" element={<Register darkMode={darkMode} />} />
+          
+          {/* Routes with navbar */}
+          <Route
+            path="/*"
+            element={
+              <>
+                <NavBar darkMode={darkMode} setDarkMode={setDarkMode} />
+                <div className="pl-16">
+                  <Routes>
+                    <Route path="/" element={<HomeComponent darkMode={darkMode} />} />
+                    <Route path="/events" element={<EventComponent darkMode={darkMode} />} />
+                    <Route path="/add-event" element={<CreateEvent darkMode={darkMode} />} />
+                    <Route path="/vote-results" element={<VoteResultComponent darkMode={darkMode} />} />
+                    <Route path="/profile" element={<UserProfile darkMode={darkMode} />} />
+                    <Route path="/event/:eventId" element={<EventDetail darkMode={darkMode} />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </div>
+              </>
+            }
           />
-        ) : (
-          <EventComponent 
-            darkMode={darkMode} 
-            navigateToEventDetail={navigateToEventDetail} 
-          />
-        )}
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 };
 

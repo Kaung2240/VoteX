@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate, Link } from "react-router-dom";
 import { 
   FaUser, 
   FaEnvelope, 
@@ -14,10 +15,10 @@ import {
 
 interface RegisterProps {
   darkMode: boolean;
-  setCurrentPage: (page: string) => void;
 }
 
-const Register: React.FC<RegisterProps> = ({ darkMode, setCurrentPage }) => {
+const Register: React.FC<RegisterProps> = ({ darkMode }) => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -111,7 +112,7 @@ const Register: React.FC<RegisterProps> = ({ darkMode, setCurrentPage }) => {
       }
   
       // Registration successful - navigate to events
-      setCurrentPage("events");
+      navigate("/events");
     } catch (error) {
       setFormError("Network error. Please try again.");
     } finally {
@@ -477,13 +478,13 @@ const Register: React.FC<RegisterProps> = ({ darkMode, setCurrentPage }) => {
         <motion.div variants={itemVariants} className="flex justify-center mt-6">
           <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
             Already have an account?{' '}
-            <button 
-              onClick={() => setCurrentPage("login")}
+            <Link 
+              to="/login"
               className="font-medium text-blue-500 hover:text-blue-400 inline-flex items-center"
             >
               <FaArrowLeft className="mr-1 h-3 w-3 transition-transform group-hover:-translate-x-1" />
               Sign in 
-            </button>
+            </Link>
           </p>
         </motion.div>
       </motion.div>

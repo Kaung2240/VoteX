@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -99,7 +99,7 @@ export const EventDetail = ({ darkMode }: EventDetailProps) => {
     
     // Simulate API call for voting
     setTimeout(() => {
-      setEvent(prev => {
+      setEvent((prev: any) => {
         const updatedCandidates = prev.candidates.map((candidate: Candidate) => {
           if (candidate.id === selectedCandidate) {
             return { ...candidate, votes: candidate.votes + 1 };

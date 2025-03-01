@@ -12,8 +12,6 @@ import {
   FaList,
   FaCalendarAlt,
   FaFilter,
-  FaStar,
-  FaEye
 } from "react-icons/fa";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -53,6 +51,36 @@ export const EventComponent = ({ darkMode }: EventComponentProps) => {
       end: "2024-03-17 18:00",
       creator: "Tech Org",
       participants: 1200,
+    },
+    {
+      id: 2,
+      title: "AI Symposium 2024",
+      category: "Technology",
+      status: "upcoming",
+      start: "2024-05-10 10:00",
+      end: "2024-05-12 17:00",
+      creator: "AI Forum",
+      participants: 800,
+    },
+    {
+      id: 3,
+      title: "Music Festival 2024",
+      category: "Music",
+      status: "upcoming",
+      start: "2024-07-20 12:00",
+      end: "2024-07-22 23:00",
+      creator: "Music Org",
+      participants: 5000,
+    },
+    {
+      id: 4,
+      title: "Sports Expo 2024",
+      category: "Sports",
+      status: "ended",
+      start: "2024-01-05 09:00",
+      end: "2024-01-07 18:00",
+      creator: "Sports League",
+      participants: 1500,
     },
     // Keep your existing events array
   ]); 
@@ -102,16 +130,16 @@ export const EventComponent = ({ darkMode }: EventComponentProps) => {
   };
 
   // Format date for better readability
-  const formatEventDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+  // const formatEventDate = (dateStr: string) => {
+  //   const date = new Date(dateStr);
+  //   return date.toLocaleDateString('en-US', {
+  //     weekday: 'short',
+  //     month: 'short', 
+  //     day: 'numeric',
+  //     hour: '2-digit',
+  //     minute: '2-digit'
+  //   });
+  // };
 
   // New hover state for cards
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);

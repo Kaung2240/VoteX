@@ -1,14 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   FaHome,
-  FaProjectDiagram,
   FaCalendarAlt,
-  FaChartBar,
   FaVoteYea,
-  FaClock,
-  FaMapMarkerAlt,
   FaCalendarPlus,
   FaMoon,
   FaSun,

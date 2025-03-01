@@ -1,5 +1,5 @@
 // components/UserProfile.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   FaUser, 
@@ -23,17 +23,6 @@ interface UserProfileProps {
 export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
-  const [isComponentMounted, setIsComponentMounted] = useState(false);
-  
-  // Ensure component is fully mounted before animations
-  useEffect(() => {
-    setIsComponentMounted(true);
-    
-    // Clean up function
-    return () => {
-      setIsComponentMounted(false);
-    };
-  }, []);
   
   // Mock user data
   const [userData, setUserData] = useState({
@@ -66,17 +55,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
     // Here you would implement actual profile update logic
   };
 
-  // Define animation variants
-  const contentVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        duration: 0.5,
-        when: "beforeChildren"
-      }
-    }
-  };
+
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-800 text-white" : "bg-gray-50 text-gray-900"}`}>

@@ -16,13 +16,6 @@ import {jwtDecode as jwt_decode} from 'jwt-decode';
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
-  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
-  
-  // Function to navigate to event detail
-  const navigateToEventDetail = (eventId: number) => {
-    setSelectedEventId(eventId);
-    setCurrentPage("event-detail");
-  };
 
   // Add to your main App component or separate config
   axios.interceptors.request.use(async (config) => {
@@ -37,9 +30,6 @@ const App = () => {
     }
     return config;
   });
-  
-  // Determine whether to show the navbar based on the current page
-  const showNavbar = !["login", "register"].includes(currentPage);
   
   return (
     <Router>

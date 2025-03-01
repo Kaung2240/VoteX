@@ -10,7 +10,7 @@ import {
 // Import modularized components
 import EventInfo from "./event-detail/EventInfo";
 import CandidateVoting from "./voting/CandidateVoting";
-import VotingSummary from "./voting/VotingSummary";
+import CommentSection from "./event-detail/CommentSection";
 import VoteConfirmationModal from "./voting/VoteConfirmationModal";
 // import VoteResultDetails from "./voting/VoteResultDetails";
 import { VoteResultComponent } from "./VoteResult";
@@ -283,14 +283,10 @@ export const EventDetail = ({ darkMode }: EventDetailProps) => {
           )}
         </div>
 
-        {/* Right column - Voting summary */}
-        <VotingSummary 
-          candidates={event.candidates}
-          totalVotes={event.totalVotes}
-          selectedCandidate={selectedCandidate}
-          hasVoted={hasVoted}
-          darkMode={darkMode}
-        />
+        {/* Right column - Comments */}
+        <div className="lg:col-span-1">
+          <CommentSection eventId={event.id} darkMode={darkMode} />
+        </div>
       </div>
 
       {/* Confirmation modal */}

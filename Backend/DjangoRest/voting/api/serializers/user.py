@@ -2,6 +2,7 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from ...models import Profile
+import pytz
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
@@ -34,9 +35,17 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
 
 class ProfileSerializer(serializers.ModelSerializer):
+    timezone_choices = [(tz, tz) for tz in pytz.all_timezones]
+    timezone = serializers.ChoiceField(choices=timezone_choices, default='UTC')
+
     class Meta:
         model = Profile
         fields = ['timezone', 'profile_picture', 'birthday']
+        
+    def validate_timezone(self, value):
+        if value not in pytz.all_timezones:
+            raise serializers.ValidationError("Invalid timezone")
+        return value
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()

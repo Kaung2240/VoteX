@@ -10,6 +10,8 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import UserProfile from "./components/UserProfile";
 import EventDetail from "./components/EventDetail";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPasswordConfirm from "./components/ResetPasswordConfirm";
 import axios from 'axios';
 import { refreshAccessToken } from "./utils/auth";
 import {jwtDecode as jwt_decode} from 'jwt-decode';
@@ -38,6 +40,8 @@ const App = () => {
           {/* Auth routes (no navbar) */}
           <Route path="/login" element={<Login darkMode={darkMode} />} />
           <Route path="/register" element={<Register darkMode={darkMode} />} />
+          <Route path="/forgot-password" element={<ForgotPassword darkMode={darkMode} />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordConfirm darkMode={darkMode} />} />
           
           {/* Routes with navbar */}
           <Route

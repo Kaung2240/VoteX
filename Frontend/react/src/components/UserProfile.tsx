@@ -13,8 +13,10 @@ import {
   FaSave,
   FaVoteYea,
   FaCheckCircle,
-  FaClock
+  FaClock,
+  FaGlobeAmericas
 } from "react-icons/fa";
+import api from "../utils/api";
 
 interface UserProfileProps {
   darkMode: boolean;
@@ -23,6 +25,7 @@ interface UserProfileProps {
 export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
+  const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
   
   // Mock user data
   const [userData, setUserData] = useState({
@@ -55,7 +58,35 @@ export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
     // Here you would implement actual profile update logic
   };
 
+  // Update timezone list since Intl.supportedValuesOf is not widely supported
+  const timeZoneList = [
+    'UTC',
+    'America/New_York',
+    'America/Chicago',
+    'America/Denver',
+    'America/Los_Angeles',
+    'America/Phoenix',
+    'Europe/London',
+    'Europe/Paris',
+    'Asia/Tokyo',
+    'Asia/Shanghai',
+    'Australia/Sydney',
+    'Pacific/Auckland'
+  ];
 
+  // Handle timezone change
+  const handleTimezoneChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    try {
+      const response = await api.updateTimezone(e.target.value);
+      if (response.status === 200) {
+        setTimezone(e.target.value);
+        // Add success notification if you have one
+      }
+    } catch (error) {
+      console.error('Failed to update timezone:', error);
+      // Add error notification if you have one
+    }
+  };
 
   return (
     <div className={`min-h-screen ${darkMode ? "bg-gray-800 text-white" : "bg-gray-50 text-gray-900"}`}>
@@ -537,7 +568,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
                       <h3 className={`text-xl font-bold mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>
                         Account Settings
                       </h3>
-                      <div className={`p-4 rounded-lg ${darkMode ? "bg-gray-600" : "bg-gray-50"}`}>
+                      <div className={`p-4 rounded-lg ${darkMode ? "bg-gray-600" : "bg-gray-50"} space-y-4`}>
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-medium">Change Password</p>
@@ -555,6 +586,40 @@ export const UserProfile: React.FC<UserProfileProps> = ({ darkMode }) => {
                             <FaKey className="mr-1 inline" />
                             Update
                           </button>
+                        </div>
+
+                        <div className="pt-4 border-t border-gray-500">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium">Timezone</p>
+                              <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                                Used as default for all events
+                              </p>
+                            </div>
+                            <div className="w-48">
+                              <div className="relative">
+                                <div className="absolute left-3 top-3">
+                                  <FaGlobeAmericas className="text-gray-400" />
+                                </div>
+                                <select
+                                  id="timezone"
+                                  value={timezone}
+                                  onChange={handleTimezoneChange}
+                                  className={`pl-10 pr-4 py-2 w-full rounded-lg ${
+                                    darkMode 
+                                      ? "bg-gray-700 border-gray-600 text-white" 
+                                      : "bg-gray-100 border-gray-300 text-gray-900"
+                                  } border focus:ring-2 focus:ring-blue-500`}
+                                >
+                                  {timeZoneList.map((tz) => (
+                                    <option key={tz} value={tz}>
+                                      {tz.replace(/_/g, ' ')}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

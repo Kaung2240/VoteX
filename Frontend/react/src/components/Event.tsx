@@ -12,8 +12,9 @@ import {
   FaList,
   FaCalendarAlt,
   FaFilter,
+  FaGlobeAmericas,
 } from "react-icons/fa";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -41,7 +42,8 @@ export const EventComponent = ({ darkMode }: EventComponentProps) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [events, setEvents] = useState<Event[]>([
+  const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const [events, /*setEvents*/] = useState<Event[]>([
     {
       id: 1,
       title: "Tech Conference 2024",
@@ -144,9 +146,37 @@ export const EventComponent = ({ darkMode }: EventComponentProps) => {
   // New hover state for cards
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
-  const handleViewDetails = (eventId: number, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the card click event from firing
-    navigate(`/event/${eventId}`);
+  // Add this function to format date with timezone
+  const formatDateWithTimezone = (dateStr: string) => {
+    return new Date(dateStr).toLocaleString('en-US', {
+      timeZone: timezone,
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  // Replace timezone selection with supported timezones list
+  const timeZoneList = [
+    'UTC',
+    'America/New_York',
+    'America/Chicago',
+    'America/Denver',
+    'America/Los_Angeles',
+    'America/Phoenix',
+    'Europe/London',
+    'Europe/Paris',
+    'Asia/Tokyo',
+    'Asia/Shanghai',
+    'Australia/Sydney',
+    'Pacific/Auckland'
+  ];
+
+  // Update timezone handling function with proper type
+  const handleTimezoneChange = (tz: string) => {
+    setTimezone(tz);
   };
 
   return (
@@ -260,6 +290,27 @@ export const EventComponent = ({ darkMode }: EventComponentProps) => {
               <option value="Music">Music</option>
               <option value="Sports">Sports</option>
             </select>
+
+            <div className="relative">
+              <div className="absolute left-3 top-3.5">
+                <FaGlobeAmericas className="text-gray-400" />
+              </div>
+              <select
+                value={timezone}
+                onChange={(e) => handleTimezoneChange(e.target.value)}
+                className={`w-full pl-10 pr-4 py-2.5 rounded-lg border appearance-none ${
+                  darkMode 
+                    ? "bg-gray-800 border-gray-700 text-white focus:border-blue-500" 
+                    : "bg-white border-gray-200 focus:border-blue-400"
+                } outline-none transition-all duration-200`}
+              >
+                {timeZoneList.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz.replace(/_/g, ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
       
             <div className="flex items-center gap-2">
               <motion.button
@@ -376,7 +427,7 @@ export const EventComponent = ({ darkMode }: EventComponentProps) => {
     
                   <div className={`p-5 mt-5 ${viewMode === "list" ? "flex flex-col md:flex-row md:items-center md:gap-6" : ""}`}>
                     {/* Improved Progress Bar for ongoing events */}
-                    {event.status === "ongoing" && (
+                    {/* {event.status === "ongoing" && (
                       <div className="mb-4 mt-1">
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
@@ -395,7 +446,7 @@ export const EventComponent = ({ darkMode }: EventComponentProps) => {
                           />
                         </div>
                       </div>
-                    )}
+                    )} */}
                     
                     {/* Card Content with Improved Layout */}
                     <div className={`flex flex-col gap-4 ${viewMode === "list" ? "md:flex-1" : ""}`}>
@@ -431,13 +482,11 @@ export const EventComponent = ({ darkMode }: EventComponentProps) => {
                               <FaCalendar className={`w-4 h-4 flex-shrink-0 ${darkMode ? "text-gray-400" : "text-gray-500"}`} />
                               <div>
                                 <p className={`text-sm font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                                  {new Date(event.start).toLocaleDateString('en-US', {
-                                    month: 'short', day: 'numeric', year: 'numeric'
-                                  })}
+                                  {formatDateWithTimezone(event.start)}
                                 </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                                  {new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {' '}
-                                  {new Date(event.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                  {formatDateWithTimezone(event.start).split(',')[1]} - {' '}
+                                  {formatDateWithTimezone(event.end).split(',')[1]}
                                 </p>
                               </div>
                             </div>

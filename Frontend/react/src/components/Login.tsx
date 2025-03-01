@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle, FaGithub, FaArrowRight } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaArrowRight, FaHome } from "react-icons/fa";
 import {jwtDecode as jwt_decode} from 'jwt-decode';
 
 interface LoginProps {
@@ -59,10 +59,8 @@ const Login: React.FC<LoginProps> = ({ darkMode }) => {
       setTimeout(() => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
-        setCurrentPage("login");
       }, expiresIn);
   
-      setCurrentPage("events");
     } catch (error) {
       setFormError("Network error. Please try again.");
     } finally {
@@ -196,10 +194,14 @@ const Login: React.FC<LoginProps> = ({ darkMode }) => {
                 Remember me
               </label>
             </div>
+
             <div className="text-sm">
-              <a href="#" className="font-medium text-blue-500 hover:text-blue-400">
+              <Link
+                to="/forgot-password"
+                className={`font-medium text-blue-500 hover:text-blue-400 ${darkMode ? "text-blue-400 hover:text-blue-300" : ""}`}
+              >
                 Forgot your password?
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -226,60 +228,25 @@ const Login: React.FC<LoginProps> = ({ darkMode }) => {
           </div>
         </motion.form>
 
-        <motion.div variants={itemVariants} className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className={`w-full border-t ${darkMode ? "border-gray-700" : "border-gray-300"}`}></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className={`px-2 ${darkMode ? "bg-gray-800 text-gray-400" : "bg-white text-gray-500"}`}>
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              type="button"
-              className={`w-full flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium ${
-                darkMode 
-                  ? "bg-gray-700 border-gray-600 hover:bg-gray-600 text-white"
-                  : "bg-white border-gray-300 hover:bg-gray-50 text-gray-700"
-              } transition-colors`}
-            >
-              <FaGoogle className="mr-2 h-5 w-5 text-red-500" />
-              Google
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              type="button"
-              className={`w-full flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium ${
-                darkMode 
-                  ? "bg-gray-700 border-gray-600 hover:bg-gray-600 text-white"
-                  : "bg-white border-gray-300 hover:bg-gray-50 text-gray-700"
-              } transition-colors`}
-            >
-              <FaGithub className="mr-2 h-5 w-5" />
-              GitHub
-            </motion.button>
-          </div>
+        {/* Back to Login and Home */}
+        <motion.div variants={itemVariants} className="flex justify-between mt-6">
+          <Link 
+            to="/"
+            className={`font-medium text-blue-500 hover:text-blue-400 inline-flex items-center ${darkMode ? "text-blue-400 hover:text-blue-300" : ""}`}
+          >
+            <FaHome className="mr-2 h-4 w-4" />
+            Back to Home
+          </Link>
+          <Link 
+            to="/register"
+            className={`font-medium text-blue-500 hover:text-blue-400 inline-flex items-center ${darkMode ? "text-blue-400 hover:text-blue-300" : ""}`}
+          >
+            Register
+            <FaArrowRight className="ml-2 h-4 w-4" />
+          </Link>
         </motion.div>
 
-        <motion.div variants={itemVariants} className="flex justify-center mt-6">
-          <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-            Don't have an account?{' '}
-            <Link 
-              to="/register"
-              className="font-medium text-blue-500 hover:text-blue-400 inline-flex items-center"
-            >
-              Register now 
-              <FaArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </p>
-        </motion.div>
+        
       </motion.div>
     </div>
   );

@@ -7,10 +7,9 @@ import {
   FaLock, 
   FaEye, 
   FaEyeSlash, 
-  FaCheck, 
-  FaGoogle, 
-  FaGithub,
-  FaArrowLeft 
+  FaCheck,
+  FaArrowLeft,
+  FaHome
 } from "react-icons/fa";
 
 interface RegisterProps {
@@ -19,7 +18,7 @@ interface RegisterProps {
 
 const Register: React.FC<RegisterProps> = ({ darkMode }) => {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -53,7 +52,7 @@ const Register: React.FC<RegisterProps> = ({ darkMode }) => {
     e.preventDefault();
     
     // Form validation
-    if (!name || !email || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
       setFormError("Please fill in all fields");
       return;
     }
@@ -88,7 +87,7 @@ const Register: React.FC<RegisterProps> = ({ darkMode }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: name,
+          username: username,
           email: email,
           password: password,
           password2: confirmPassword
@@ -183,27 +182,27 @@ const Register: React.FC<RegisterProps> = ({ darkMode }) => {
 
         <motion.form variants={itemVariants} className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4 rounded-md">
-            {/* Name Field */}
+            {/* Username Field */}
             <div>
-              <label htmlFor="name" className={`block text-sm font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                Full Name
+              <label htmlFor="username" className={`block text-sm font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                Username
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FaUser className={`h-5 w-5 ${darkMode ? "text-gray-500" : "text-gray-400"}`} />
                 </div>
                 <input
-                  id="name"
-                  name="name"
+                  id="username"
+                  name="username"
                   type="text"
-                  autoComplete="name"
+                  autoComplete="username"
                   required
                   className={`block w-full pl-10 pr-4 py-3 border ${
                     darkMode ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
                   } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
-                  placeholder="Your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
             </div>
@@ -431,61 +430,24 @@ const Register: React.FC<RegisterProps> = ({ darkMode }) => {
           </div>
         </motion.form>
 
-        {/* Social Sign Up Options */}
-        <motion.div variants={itemVariants} className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className={`w-full border-t ${darkMode ? "border-gray-700" : "border-gray-300"}`}></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className={`px-2 ${darkMode ? "bg-gray-800 text-gray-400" : "bg-white text-gray-500"}`}>
-                Or sign up with
-              </span>
-            </div>
-          </div>
+       
 
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              type="button"
-              className={`w-full flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium ${
-                darkMode 
-                  ? "bg-gray-700 border-gray-600 hover:bg-gray-600 text-white"
-                  : "bg-white border-gray-300 hover:bg-gray-50 text-gray-700"
-              } transition-colors`}
-            >
-              <FaGoogle className="mr-2 h-5 w-5 text-red-500" />
-              Google
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              type="button"
-              className={`w-full flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium ${
-                darkMode 
-                  ? "bg-gray-700 border-gray-600 hover:bg-gray-600 text-white"
-                  : "bg-white border-gray-300 hover:bg-gray-50 text-gray-700"
-              } transition-colors`}
-            >
-              <FaGithub className="mr-2 h-5 w-5" />
-              GitHub
-            </motion.button>
-          </div>
-        </motion.div>
-
-        {/* Back to Login */}
-        <motion.div variants={itemVariants} className="flex justify-center mt-6">
-          <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-            Already have an account?{' '}
-            <Link 
-              to="/login"
-              className="font-medium text-blue-500 hover:text-blue-400 inline-flex items-center"
-            >
-              <FaArrowLeft className="mr-1 h-3 w-3 transition-transform group-hover:-translate-x-1" />
-              Sign in 
-            </Link>
-          </p>
+        {/* Back to Home and Login */}
+        <motion.div variants={itemVariants} className="flex justify-between mt-6">
+          <Link 
+            to="/"
+            className={`font-medium text-blue-500 hover:text-blue-400 inline-flex items-center ${darkMode ? "text-blue-400 hover:text-blue-300" : ""}`}
+          >
+            <FaHome className="mr-2 h-4 w-4" />
+            Back to Home
+          </Link>
+          <Link 
+            to="/login"
+            className={`font-medium text-blue-500 hover:text-blue-400 inline-flex items-center ${darkMode ? "text-blue-400 hover:text-blue-300" : ""}`}
+          >
+            <FaArrowLeft className="mr-2 h-4 w-4" />
+            Back to Login
+          </Link>
         </motion.div>
       </motion.div>
     </div>
